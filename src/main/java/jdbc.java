@@ -1,8 +1,13 @@
+import javax.net.ssl.SSLException;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class jdbc {
-    public static void main (String[] args) throws SQLException, ClassNotFoundException{
-        String url = "jdbc:mysql://localhost:3306/zachet";
+    public static void main (String[] args) throws SQLException, ClassNotFoundException {
+        List<Columns> columns = new ArrayList<Columns>();
+        String url = "jdbc:mysql://localhost:3306/zachet?serverTimezone=UTC";
         String userName = "root";
         String password = "root";
         try {
@@ -11,8 +16,7 @@ public class jdbc {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT * FROM users");
             while (resultSet.next()) {
-                //System.out.println(resultSet.getString(2));
-                System.out.println(resultSet.getInt("id_user") + " : " + resultSet.getString("name"));
+                columns.add(new Columns(resultSet.getInt("id_user"), resultSet.getString("name")));
             }
             resultSet.close();
             statement.close();
@@ -21,6 +25,9 @@ public class jdbc {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
+        }
+        for (Columns column: columns) {
+            System.out.println(column.toString());
         }
     }
 }
